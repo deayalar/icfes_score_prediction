@@ -1,0 +1,150 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+Data taken from [here](https://www.datos.gov.co/en/Educaci-n/Saber-11-2019-2/ynam-yc42), contains the results of the state exam of 2019-2. The goal is to make regression models on the final score
+
+Compute age utility
+```{r}
+#install.packages('lubridate')
+library(lubridate)
+age <- function(dob, age.day = today(), units = "years", floor = TRUE) {
+    calc.age = interval(dob, age.day) / duration(num = 1, units = units)
+    if (floor) return(as.integer(floor(calc.age)))
+    return(calc.age)
+}
+```
+
+###Load the dataset
+
+```{r}
+df_20191 <- read.csv('Saber_11__2019-1 original.csv', fileEncoding = "UTF-8", stringsAsFactors = FALSE)
+exam_date_1 = as.Date("2019-03-10")
+df_20191$STU_BIRTHDATE_DATE <- as.Date(df_20191$STU_BIRTHDATE, format="%d/%m/%Y")
+df_20191$STU_AGE <- age(df_20191$STU_BIRTHDATE_DATE, age.day = exam_date_1)
+```
+
+```{r}
+df_20192 <- read.csv('Saber_11__2019-2 original.csv', fileEncoding = "UTF-8", stringsAsFactors = FALSE)
+exam_date_2 = as.Date("2019-08-25")
+df_20192$STU_BIRTHDATE_DATE <- as.Date(df_20192$STU_BIRTHDATE, format="%m/%d/%Y")
+df_20192$STU_AGE <- age(df_20192$STU_BIRTHDATE_DATE, age.day = exam_date_2)
+```
+
+Remove columns related to identifiers
+Remove the other scores and leave only the global score
+Clean etnicity field
+Remove fields without STU_INSE_INDIVIDUAL
+```{r}
+clean_columns <- function(df) {
+  columns_to_drop <- c("STU_DOCTYPE","PERIOD", "STU_CONSECUTIVE", "STU_STUDENT", "STU_BIRTHDATE", "STU_BIRTHDATE_DATE", "STU_ETNICITY", "STU_TYPEEARNINGS", "FAMI_ECONOMIC", "SCHO_CODE_ICFES", "SCHO_NAME_BRANCH", "SCHO_CODE_DANE_BRANCH", "SCHO_BRANCH_PRINCIPAL", "SCHO_COD_DPTO", "STU_DEPRIVEDFREEDOM", "STU_COD_MCPIO_TAKE", "STU_COD_DPTO_TAKE", "STU_STATEINVESTIGATION", "STU_MCPIO_TAKE", "STU_DPTO_TAKE")
+  df <- df[ , !(names(df) %in% columns_to_drop)]
+
+  score_columns <- c("SCORE_CRITICAL_READING", "PERCENTILE_CRITICAL_READING", "PERFORMANCE_CRITICAL_READING", "SCORE_MATHS", "PERCENTILE_MATHS", "PERFORMANCE_MATHS", "SCORE_NATURAL_SCIENCES", "PERCENTILE_NATURAL_SCIENCES", "PERFORMANCE_NATURAL_SCIENCES", "SCORE_SOCIAL_SCIENCE", "PERCENTILE_SOCIAL_SCIENCE", "PERFORMANCE_SOCIAL_SCIENCE", "SCORE_ENGLISH", "PERCENTILE_ENGLISH", "PERFORMANCE_ENGLISH", "PERFORMANCE_ENGLISH", "PERCENTILE_GLOBAL", "STU_GENERACION_E")
+  df <- df[ , !(names(df) %in% score_columns)]
+  
+  unique(df$STU_HASETNICITY)
+  df$STU_HASETNICITY <- as.character(df$STU_HASETNICITY)
+  df$STU_HASETNICITY[df$STU_HASETNICITY == "-"] <- "No"
+  df$STU_HASETNICITY <- as.factor(df$STU_HASETNICITY)
+
+  #Remove country of residence (STU_COUNTRY_RES) because it has the same value of nationality (STU_NATIONALITY) for all the observations 
+  #Remove residence variables because we are interested in the quality of the school where the student has attended
+  #what is really important is where the student has carried on his studies
+  df <- df[ , !(names(df) %in% c("STU_COD_RESIDENCE_DPTO", "STU_COD_RESIDENCE_MCPIO", "STU_COUNTRY_RES", "STU_DPT_RESIDENCE", "STU_MCPIO_RESIDENCE", "SCHO_MCPIO", "SCHO_COD_MCPIO"))]
+  
+}
+```
+
+```{r}
+df_20191 <- clean_columns(df_20191)
+df_20192 <- clean_columns(df_20192)
+```
+
+```{r}
+df_20191 <- df_20191[df_20191$FAMI_ESTRATO != "-",]
+df_20191 <- df_20191[df_20191$FAMI_ESTRATO != "",]
+df_20192 <- df_20192[df_20192$FAMI_ESTRATO != "-",]
+df_20192 <- df_20192[df_20192$FAMI_ESTRATO != "",]
+```
+
+
+Load Schools data
+```{r}
+df_school_20181 <- read.csv('SB11-CLASIFI-PLANTELES-20181.csv', sep = "|", dec = ".", fileEncoding = "UTF-8")
+df_school_20182 <- read.csv('SB11-CLASIFI-PLANTELES-20182.csv', sep = "\t", dec = ",", fileEncoding = "UTF-8")
+
+df_school_20181 <- df_school_20181[ , c("SCHO_CODE_DANE", "SCHO_TOTAL_SCORE", "SCHO_CATEGORY")]
+df_school_20182 <- df_school_20182[ , c("SCHO_CODE_DANE", "SCHO_TOTAL_SCORE", "SCHO_CATEGORY")]
+
+df_school <- rbind(df_school_20181, df_school_20182)
+```
+
+Merge school information
+  - Merge datasets and remove the column SCHO_CODE_DANE
+  - Remove schools without category
+```{r}
+merge_school <- function(df) {
+  df_school$SCHO_CODE_DANE = as.factor(df_school$SCHO_CODE_DANE)
+  df$SCHO_CODE_DANE = as.factor(df$SCHO_CODE_DANE)
+  df <- merge(x = df_school, y = df, by = "SCHO_CODE_DANE", all.y = TRUE)
+  df <- df[ , !(names(df) %in% c("SCHO_CODE_DANE"))]
+  df <- df[!is.na(df$SCHO_CATEGORY),]
+}
+```
+
+```{r}
+df_20191 <- merge_school(df_20191)
+df_20192 <- merge_school(df_20192)
+```
+
+```{r}
+options(digits=10)
+df_20191 <- df_20191[df_20191$STU_INSE_INDIVIDUAL != "" | df_20191$STU_INSE_INDIVIDUAL != "-",]
+df_20191$STU_INSE_INDIVIDUAL = as.numeric(df_20191$STU_INSE_INDIVIDUAL)
+```
+
+```{r}
+options(digits=10)
+df_20192 <- df_20192[df_20192$STU_INSE_INDIVIDUAL != "" | df_20192$STU_INSE_INDIVIDUAL != "-",]
+df_20192$STU_INSE_INDIVIDUAL = as.numeric(df_20192$STU_INSE_INDIVIDUAL)
+```
+
+##Sampling
+```{r}
+set.seed(5)
+df_20191 <- df_20191[!is.na(df_20191$STU_INSE_INDIVIDUAL),]
+sample_df_20191 = df_20191[sample(nrow(df_20191), floor(nrow(df_20191) * 0.50)), ]
+```
+
+```{r}
+df_20192 <- df_20192[!is.na(df_20192$STU_INSE_INDIVIDUAL),]
+sample_df_20192 = df_20192[sample(nrow(df_20192), floor(nrow(df_20192) * 0.50)), ]
+```
+
+```{r}
+rm(df_20191)
+rm(df_20192)
+df <- rbind(sample_df_20191, sample_df_20192)
+rm(sample_df_20191)
+rm(sample_df_20192)
+```
+
+
+```{r}
+#unique(df$FAMI_PEOPLEATHOME)
+# REmove temporarily
+df <- df[ , !(names(df) %in% c("SCHO_NAME", "STU_NATIONALITY", "SCHO_DPTO", "STU_TYPEEARNING"))]
+colnames(df)
+```
+
+
+```{r}
+head(df)
+```
+
+```{r}
+write.csv(df,"Saber_11_2019_merge.csv", row.names = FALSE, fileEncoding = "UTF-8")
+```

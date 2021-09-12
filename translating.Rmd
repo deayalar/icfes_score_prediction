@@ -1,0 +1,249 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+set.seed(5)
+df <- read.csv('Saber_11_2019_merge.csv', fileEncoding = "UTF-8", stringsAsFactors = FALSE)
+head(df)
+```
+
+```{r}
+df$STU_HASETNICITY[df$STU_HASETNICITY == "Si"] = "Yes"
+unique(df$STU_HASETNICITY)
+```
+
+```{r}
+
+df$FAMI_PEOPLEATHOME[df$FAMI_PEOPLEATHOME == "3 a 4"] = "3 to 4"
+df$FAMI_PEOPLEATHOME[df$FAMI_PEOPLEATHOME == "5 a 6"] = "5 to 6"
+df$FAMI_PEOPLEATHOME[df$FAMI_PEOPLEATHOME == "7 a 8"] = "7 to 8"
+df$FAMI_PEOPLEATHOME[df$FAMI_PEOPLEATHOME == "1 a 2"] = "1 to 2"
+df$FAMI_PEOPLEATHOME[df$FAMI_PEOPLEATHOME == "9 o más"] = "9 or more"
+unique(df$FAMI_PEOPLEATHOME)
+```
+```{r}
+
+df$FAMI_ROOMSHOUSE[df$FAMI_ROOMSHOUSE == "Uno"] = "1"
+df$FAMI_ROOMSHOUSE[df$FAMI_ROOMSHOUSE == "Dos"] = "2"
+df$FAMI_ROOMSHOUSE[df$FAMI_ROOMSHOUSE == "Tres"] = "3"
+df$FAMI_ROOMSHOUSE[df$FAMI_ROOMSHOUSE == "Cuatro"] = "4"
+df$FAMI_ROOMSHOUSE[df$FAMI_ROOMSHOUSE == "Cinco"] = "5"
+df$FAMI_ROOMSHOUSE[df$FAMI_ROOMSHOUSE == "Seis o mas"] = "6"
+unique(df$FAMI_ROOMSHOUSE)
+```
+
+```{r}
+
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "No Aplica"] = "N/A"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "No sabe"] = "Dont Know"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Ninguno"] = "None"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Primaria incompleta"] = "Primary uncompleted"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Primaria completa"] = "Primary completed"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Secundaria (Bachillerato) incompleta"] = "Secondary uncompleted"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Secundaria (Bachillerato) completa"] = "Secondary completed"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Técnica o tecnológica incompleta"] = "Technical uncompleted"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Técnica o tecnológica completa"] = "Technical completed"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Educación profesional incompleta"] = "Professional uncompleted"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Educación profesional completa"] = "Professional completed"
+df$FAMI_FATHEREDUCATION[df$FAMI_FATHEREDUCATION == "Postgrado"] = "Postgraduate"
+unique(df$FAMI_FATHEREDUCATION)
+```
+```{r}
+
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "No Aplica"] = "N/A"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "No sabe"] = "Dont Know"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Ninguno"] = "None"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Primaria incompleta"] = "Primary uncompleted"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Primaria completa"] = "Primary completed"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Secundaria (Bachillerato) incompleta"] = "Secondary uncompleted"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Secundaria (Bachillerato) completa"] = "Secondary completed"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Técnica o tecnológica incompleta"] = "Technical uncompleted"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Técnica o tecnológica completa"] = "Technical completed"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Educación profesional incompleta"] = "Professional uncompleted"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Educación profesional completa"] = "Professional completed"
+df$FAMI_MOTHEREDUCATION[df$FAMI_MOTHEREDUCATION == "Postgrado"] = "Postgraduate"
+unique(df$FAMI_MOTHEREDUCATION)
+```
+```{r}
+
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "No aplica"] = "N/A"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "No sabe"] = "Dont Know"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Pensionado"] = "Retired"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Trabaja en el hogar, no trabaja o estudia"] = "Does not work"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Es agricultor, pesquero o jornalero"] = "Agricultor, fisherman, laborer"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción"] = "Cleaning, maintenance, construction"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Es operario de máquinas o conduce vehículos (taxita, chofer)"] = "Operator, driver"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Es vendedor o trabaja en atención al público"] = "Seller or public attention"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Trabaja por cuenta propia (por ejemplo plomero, electricista)"] = "Self-employed"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)"] = "Administrative assistance"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)"] = "Doctor, lawyer, engineer"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Trabaja por cuenta propia (por ejemplo plomero, electricista)"] = "Self-employed"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc"] = "Small business owner"
+df$FAMI_JOBFATHER[df$FAMI_JOBFATHER == "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial"] = "Big business owner, director"
+unique(df$FAMI_JOBFATHER)
+```
+
+```{r}
+
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "No aplica"] = "N/A"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "No sabe"] = "Dont Know"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Pensionado"] = "Retired"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Trabaja en el hogar, no trabaja o estudia"] = "Does not work"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Es agricultor, pesquero o jornalero"] = "Agricultor, fisherman, laborer"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción"] = "Cleaning, maintenance, construction"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Es operario de máquinas o conduce vehículos (taxita, chofer)"] = "Operator, driver"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Es vendedor o trabaja en atención al público"] = "Seller or public attention"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Trabaja por cuenta propia (por ejemplo plomero, electricista)"] = "Self-employed"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)"] = "Administrative assistance"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)"] = "Doctor, lawyer, engineer"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Trabaja por cuenta propia (por ejemplo plomero, electricista)"] = "Self-employed"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc"] = "Small business owner"
+df$FAMI_JOBMOTHER[df$FAMI_JOBMOTHER == "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial"] = "Big business owner, director"
+unique(df$FAMI_JOBMOTHER)
+```
+
+```{r}
+df$FAMI_HASINTERNET[df$FAMI_HASINTERNET == "Si"] = "Yes"
+df$FAMI_HASTV[df$FAMI_HASTV == "Si"] = "Yes"
+df$FAMI_HASCOMPUTER[df$FAMI_HASCOMPUTER == "Si"] = "Yes"
+df$FAMI_HASWHASHINGMACHINE[df$FAMI_HASWHASHINGMACHINE == "Si"] = "Yes"
+df$FAMI_HASOVEN[df$FAMI_HASOVEN == "Si"] = "Yes"
+df$FAMI_HASCAR[df$FAMI_HASCAR == "Si"] = "Yes"
+df$FAMI_HASMOTO[df$FAMI_HASMOTO == "Si"] = "Yes"
+df$FAMI_HASVIDEOGAMESCONSOLE[df$FAMI_HASVIDEOGAMESCONSOLE == "Si"] = "Yes"
+```
+
+```{r}
+
+df$FAMI_NUMBOOKS[df$FAMI_NUMBOOKS == "0 A 10 LIBROS"] = "10"
+df$FAMI_NUMBOOKS[df$FAMI_NUMBOOKS == "11 A 25 LIBROS"] = "25"
+df$FAMI_NUMBOOKS[df$FAMI_NUMBOOKS == "26 A 100 LIBROS"] = "100"
+df$FAMI_NUMBOOKS[df$FAMI_NUMBOOKS == "MÁS DE 100 LIBROS"] = "200"
+unique(df$FAMI_NUMBOOKS)
+```
+
+```{r}
+
+df$FAMI_EATMILKDERIVATIVES_WEEK[df$FAMI_EATMILKDERIVATIVES_WEEK == "3 a 5 veces por semana"] = "From 3 to 5 times"
+df$FAMI_EATMILKDERIVATIVES_WEEK[df$FAMI_EATMILKDERIVATIVES_WEEK == "1 o 2 veces por semana"] = "From 1 to 2 times"
+df$FAMI_EATMILKDERIVATIVES_WEEK[df$FAMI_EATMILKDERIVATIVES_WEEK == "Nunca o rara vez comemos eso"] = "Never, seldom"
+df$FAMI_EATMILKDERIVATIVES_WEEK[df$FAMI_EATMILKDERIVATIVES_WEEK == "Todos o casi todos los días"] = "Everyday"
+unique(df$FAMI_EATMILKDERIVATIVES_WEEK)
+```
+
+```{r}
+
+df$FAMI_EATMEATFISHEGGS_WEEK[df$FAMI_EATMEATFISHEGGS_WEEK == "3 a 5 veces por semana"] = "From 3 to 5 times"
+df$FAMI_EATMEATFISHEGGS_WEEK[df$FAMI_EATMEATFISHEGGS_WEEK == "1 o 2 veces por semana"] = "From 1 to 2 times"
+df$FAMI_EATMEATFISHEGGS_WEEK[df$FAMI_EATMEATFISHEGGS_WEEK == "Nunca o rara vez comemos eso"] = "Never, seldom"
+df$FAMI_EATMEATFISHEGGS_WEEK[df$FAMI_EATMEATFISHEGGS_WEEK == "Todos o casi todos los días"] = "Everyday"
+unique(df$FAMI_EATMEATFISHEGGS_WEEK)
+```
+
+```{r}
+
+df$FAMI_EATCEREALFRUITS_WEEK[df$FAMI_EATCEREALFRUITS_WEEK == "3 a 5 veces por semana"] = "From 3 to 5 times"
+df$FAMI_EATCEREALFRUITS_WEEK[df$FAMI_EATCEREALFRUITS_WEEK == "1 o 2 veces por semana"] = "From 1 to 2 times"
+df$FAMI_EATCEREALFRUITS_WEEK[df$FAMI_EATCEREALFRUITS_WEEK == "Nunca o rara vez comemos eso"] = "Never, seldom"
+df$FAMI_EATCEREALFRUITS_WEEK[df$FAMI_EATCEREALFRUITS_WEEK == "Todos o casi todos los días"] = "Everyday"
+unique(df$FAMI_EATCEREALFRUITS_WEEK)
+```
+
+```{r}
+
+df$STU_DAILYREADING[df$STU_DAILYREADING == "No leo por entretenimiento"] = "Dont read"
+df$STU_DAILYREADING[df$STU_DAILYREADING == "30 minutos o menos"] = "30 mins"
+df$STU_DAILYREADING[df$STU_DAILYREADING == "Entre 30 y 60 minutos"] = "From 30 to 60 mins"
+df$STU_DAILYREADING[df$STU_DAILYREADING == "Entre 1 y 2 horas"] = "From 1 to 2 hrs"
+df$STU_DAILYREADING[df$STU_DAILYREADING == "Más de 2 horas"] = "More than 2 hrs"
+unique(df$STU_DAILYREADING)
+```
+```{r}
+
+df$STU_DAILYINTERNET[df$STU_DAILYINTERNET == "Más de 3 horas"] = "More than 3 hrs"
+df$STU_DAILYINTERNET[df$STU_DAILYINTERNET == "Entre 1 y 3 horas"] = "From 1 to 3 hrs"
+df$STU_DAILYINTERNET[df$STU_DAILYINTERNET == "Entre 30 y 60 minutos"] = "From 30 to 60 mins"
+df$STU_DAILYINTERNET[df$STU_DAILYINTERNET == "30 minutos o menos"] = "30 mins or less"
+df$STU_DAILYINTERNET[df$STU_DAILYINTERNET == "No Navega Internet"] = "Dont use it"
+unique(df$STU_DAILYINTERNET)
+```
+
+```{r}
+
+df$STU_WEEKLYWORKHOURS[df$STU_WEEKLYWORKHOURS == "Menos de 10 horas"] = "10"
+df$STU_WEEKLYWORKHOURS[df$STU_WEEKLYWORKHOURS == "Entre 11 y 20 horas"] = "20"
+df$STU_WEEKLYWORKHOURS[df$STU_WEEKLYWORKHOURS == "Más de 30 horas"] = "40"
+df$STU_WEEKLYWORKHOURS[df$STU_WEEKLYWORKHOURS == "Entre 21 y 30 horas"] = "30"
+unique(df$STU_WEEKLYWORKHOURS)
+```
+```{r}
+
+df$SCHO_GENDER[df$SCHO_GENDER == "FEMENINO"] = "Female"
+df$SCHO_GENDER[df$SCHO_GENDER == "MASCULINO"] = "Male"
+df$SCHO_GENDER[df$SCHO_GENDER == "MIXTO"] = "Mixed"
+unique(df$SCHO_GENDER)
+```
+```{r}
+
+df$SCHO_NATURE[df$SCHO_NATURE == "NO OFICIAL"] = "Private"
+df$SCHO_NATURE[df$SCHO_NATURE == "OFICIAL"] = "Public"
+unique(df$SCHO_NATURE)
+```
+```{r}
+
+df$SCHO_BILINGUAL[df$SCHO_BILINGUAL == "N"] = "No"
+df$SCHO_BILINGUAL[df$SCHO_BILINGUAL == "S"] = "Yes"
+unique(df$SCHO_BILINGUAL)
+```
+```{r}
+
+df$SCHO_TYPE[df$SCHO_TYPE == "ACADÉMICO"] = "Academic"
+df$SCHO_TYPE[df$SCHO_TYPE == "TÉCNICO"] = "Technical"
+df$SCHO_TYPE[df$SCHO_TYPE == "TÉCNICO/ACADÉMICO"] = "Technical/Academic"
+df$SCHO_TYPE[df$SCHO_TYPE == "NO APLICA"] = "N/A"
+unique(df$SCHO_TYPE)
+```
+
+```{r}
+
+df$SCHO_AREA_LOCATION[df$SCHO_AREA_LOCATION == "URBANO"] = "Urban"
+df$SCHO_AREA_LOCATION[df$SCHO_AREA_LOCATION == "RURAL"] = "Rural"
+unique(df$SCHO_AREA_LOCATION)
+```
+
+```{r}
+
+df$SCHO_TIME[df$SCHO_TIME == "MAÑANA"] = "Morning"
+df$SCHO_TIME[df$SCHO_TIME == "COMPLETA"] = "Complete"
+df$SCHO_TIME[df$SCHO_TIME == "TARDE"] = "Afternoon"
+df$SCHO_TIME[df$SCHO_TIME == "NOCHE"] = "Night"
+df$SCHO_TIME[df$SCHO_TIME == "SABATINA"] = "Sabbatine"
+df$SCHO_TIME[df$SCHO_TIME == "UNICA"] = "Unique"
+unique(df$SCHO_TIME)
+```
+```{r}
+df$FAMI_ESTRATO[df$FAMI_ESTRATO == "Sin Estrato"] = "No Estrato"
+```
+
+```{r}
+df$SCHO_CATEGORY[df$SCHO_CATEGORY == "A+"] = "5"
+df$SCHO_CATEGORY[df$SCHO_CATEGORY == "A"] = "4"
+df$SCHO_CATEGORY[df$SCHO_CATEGORY == "B"] = "3"
+df$SCHO_CATEGORY[df$SCHO_CATEGORY == "C"] = "2"
+df$SCHO_CATEGORY[df$SCHO_CATEGORY == "D"] = "1"
+```
+
+```{r}
+write.csv(df,"Saber_11_2019_translated.csv", row.names = FALSE, fileEncoding = "UTF-8")
+```
+
+
+
+
+
+
+
